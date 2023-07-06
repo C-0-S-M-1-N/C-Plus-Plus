@@ -20,6 +20,7 @@
 
 #include <cassert>   ///for asserts
 #include <iostream>  ///for IO operations
+#include <cinttypes> ///for shorter types
 
 /**
  * @namespace bit_manipulation
@@ -39,7 +40,7 @@ namespace most_significant_bit {
  * @param x the number
  * @returns a number that only has the most significant bit seted
  * */
-uint64_t msb(uint64_t x) {
+uint64_t most_significant_bit(uint64_t x) {
     x |= (x >> 1);
     x |= (x >> 2);
     x |= (x >> 4);
@@ -56,7 +57,7 @@ uint64_t msb(uint64_t x) {
  * @param x the number
  * @returns the position where the most significant number appears
  * */
-uint64_t msb_position(uint64_t x) {
+uint64_t position_of_the_most_significant_bit(uint64_t x) {
     x |= (x >> 1);
     x |= (x >> 2);
     x |= (x >> 4);
@@ -65,12 +66,17 @@ uint64_t msb_position(uint64_t x) {
     x |= (x >> 32);
     x++;
     x >>= 1;
+
+	/* for code simplicity we choud use most_significant_bit(x) instead of rewriting the function
+	 * but we save some time by not pushing and poping to/from the stack
+	 * */
+
+
     int ret = 0;
     while (x > 1) {
         ret++;
         x >>= 1;
     }
-    // 	std::cerr << ret << '\n';
     return ret;
 }
 
@@ -83,37 +89,25 @@ uint64_t msb_position(uint64_t x) {
  * @returns void
  * */
 static void test() {
-    int i = 0;
-    std::cout << "case " << i << ' ';
-    assert(bit_manipulation::most_significant_bit::msb(203) == 128);
-    std::cout << "passed\n";
-    i++;
+	// 203 = 0b1100 1011 -> 0b1000 0000 = 128
+    assert(bit_manipulation::most_significant_bit::most_significant_bit(203) == 128);
+ 
+	// 13 = 0b1101 -> 0b1000 = 8
+    assert(bit_manipulation::most_significant_bit::most_significant_bit(13) == 8);
 
-    std::cout << "case " << i << ' ';
-    assert(bit_manipulation::most_significant_bit::msb(13) == 8);
-    std::cout << "passed\n";
-    i++;
+	// 469366124 = 0b0001 1011 1111 1001 1111 0101 0110 1100 -> 0b0001 0x0 0x0 0x0 0x0 0x0 0x0 0x0 = 268435456
+    assert(bit_manipulation::most_significant_bit::most_significant_bit(469366124) == 268435456);
 
-    std::cout << "case " << i << ' ';
-    assert(bit_manipulation::most_significant_bit::msb(469366124) == 268435456);
-    std::cout << "passed\n";
-    i++;
+	// 203 = 0b1100 1011 -> position 7 (countiung from right to left and from 0)
+    assert(bit_manipulation::most_significant_bit::position_of_the_most_significant_bit(203) == 7);
 
-    std::cout << "case " << i << ' ';
-    assert(bit_manipulation::most_significant_bit::msb_position(203) == 7);
-    std::cout << "passed\n";
-    i++;
+	// 13 = 0b11001 -> position 3 (countiung from right to left and from 0)
+    assert(bit_manipulation::most_significant_bit::position_of_the_most_significant_bit(13) == 3);
 
-    std::cout << "case " << i << ' ';
-    assert(bit_manipulation::most_significant_bit::msb_position(13) == 3);
-    std::cout << "passed\n";
-    i++;
+	// 469366124 = 0b0001 1011 1111 1001 1111 0101 0110 1100 -> position 28 (countiung from right to left and from 0)
+    assert(bit_manipulation::most_significant_bit::position_of_the_most_significant_bit(469366124) == 28);
 
-    std::cout << "case " << i << ' ';
-    assert(bit_manipulation::most_significant_bit::msb_position(469366124) ==
-           28);
-    std::cout << "passed\n";
-    i++;
+	std::cout << "All test cases successfully passed!\n";
 }
 /**
  * @brief Main function
